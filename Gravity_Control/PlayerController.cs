@@ -6,7 +6,6 @@ using System.Collections;
 public class FirstPersonController : MonoBehaviour
 {
     //public classes
-    public GameManager gameManager;
     public Animator characterAnimator;
 
     [Space(10)]
@@ -110,9 +109,9 @@ public class FirstPersonController : MonoBehaviour
         }
 
         // Spin
-        if (Input.GetKeyDown(KeyCode.LeftShift) && gameManager.skillCharged >= 100)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && GameManager.Instance.skillCharged >= 100)
         {
-            gameManager.skillCharged = 0;
+            GameManager.Instance.skillCharged = 0;
             isSpinning = true;
             spinSound.Play();
             characterAnimator.SetTrigger("SpinTrigger");

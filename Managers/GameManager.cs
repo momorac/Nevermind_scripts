@@ -13,16 +13,43 @@ using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
+
+    #region singleton setting
+    private static GameManager instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                // 씬에서 GameManager 찾음
+                instance = FindObjectOfType<GameManager>();
+                if (instance == null)
+                {
+                    // 존재하지 않으면 새로 생성
+                    GameObject obj = new GameObject("GameManager");
+                    instance = obj.AddComponent<GameManager>();
+                    DontDestroyOnLoad(obj); // 씬 전환 시에도 유지
+                }
+            }
+            return instance;
+        }
+
+    }
+
+    #endregion
+
+
     [SerializeField]
     [Header("current status field")]
     public GameObject Player;
     [Range(0, 100)]
-    public static float playerHP;  //플레이어 현재 체력
+    public float playerHP;  //플레이어 현재 체력
     public float skillCharged = 0f;
     public int crystalRemain;
-    public static int crystalCount = 0;
+    public int crystalCount = 0;
     public int SparkCount = 0;
-    public static int puzzleStage = 0;
+    public int puzzleStage = 0;
     public bool isPuzzleOpen = false;
     public bool isCharacterPowerMode = false;
     private bool isProtected = false;
@@ -43,24 +70,12 @@ public class GameManager : MonoBehaviour
 
     [Space(5)]
     [Header("Item Count")]
-    public static int heal = 0;
-    public static int recharge = 0;
-    public static int bomb = 0;
-    public static int speedUp = 0;
-    public static int shield = 0;
+    public int heal = 0;
+    public int recharge = 0;
+    public int bomb = 0;
+    public int speedUp = 0;
+    public int shield = 0;
     public int healAmount = 50;
-
-    [Space(10)]
-    [Header("UI Component")]
-    public GameObject tutorialManager;
-    public GameObject gameoverManager;
-    public Volume volume;
-    public Image skilChargeImage;
-    public Image hpBarImage;
-    public Animator UI_HPanime;
-    public RectTransform[] ItemList = new RectTransform[5];
-    public GameObject puzzleEnterLabel;
-    public TMP_Text PuzzleLabel;
 
     [Space(5)]
     public AudioSource itemTabSound;
@@ -84,15 +99,6 @@ public class GameManager : MonoBehaviour
     [Space(5)]
     public GameObject bombPrefab;
 
-    [Space(10)]
-    [Header("effect audio source")]
-    public AudioSource itemGetSound;
-    public AudioSource hitSound;
-    public AudioSource powerModeSound;
-    public AudioSource healSound;
-    public AudioSource speedUpSound;
-    public AudioSource chargeSound;
-    public AudioSource puzzleOpenSound;
 
     [Space(10)]
     [Header("effect particles")]
@@ -131,6 +137,18 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        // 싱글톤 인스턴스 초기화
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject); // 중복 방지
+        }
+
+
         playerController = Player.GetComponent<FirstPersonController>();
         loadingSceneController = GetComponent<LoadingSceneController>();
         sparkeySpawner = GetComponent<SparkeySpawner>();
@@ -274,7 +292,7 @@ public class GameManager : MonoBehaviour
         if (!isPuzzleOpen && (crystalCount >= (puzzleStage + 1) * puzzleUnlockCount))
         {
             isPuzzleOpen = true;
-            puzzleOpenSound.Play();
+            ///////puzzleOpenSound.Play();
 
             target = SearchProximateCrystal();
 
@@ -350,10 +368,7 @@ public class GameManager : MonoBehaviour
         hpBarImage.fillAmount = playerHP / 100;
         UI_HPanime.SetBool("isAttacked", true);
 
-        if (!hitSound.isPlaying)
-        {
-            hitSound.Play();
-        }
+
     }
 
     public void UnAttacked()
@@ -404,14 +419,13 @@ public class GameManager : MonoBehaviour
         powerEffect.SetActive(false);
         powerEffect.SetActive(true);
 
-        powerModeSound.Play();
+        //////////powerModeSound.Play();
         isCharacterPowerMode = true;
         Invoke("InitStat", 3f);
     }
 
     private void Effect_getHeal()
     {
-        itemGetSound.Play();
         heal++;
         healLabel.text = heal + "";
         Debug.Log("getHeal");
@@ -422,7 +436,6 @@ public class GameManager : MonoBehaviour
 
     private void Effect_getRecharge()
     {
-        itemGetSound.Play();
         recharge++;
         rechargeLabel.text = recharge + "";
         Debug.Log("getRechrge");
@@ -433,7 +446,6 @@ public class GameManager : MonoBehaviour
     }
     private void Effect_getBomb()
     {
-        itemGetSound.Play();
         bomb++;
         bombLabel.text = bomb + "";
         Debug.Log("getBomb");
@@ -444,7 +456,6 @@ public class GameManager : MonoBehaviour
     }
     private void Effect_getShield()
     {
-        itemGetSound.Play();
         shield++;
         shieldLabel.text = shield + "";
         Debug.Log("getShield");
@@ -455,7 +466,6 @@ public class GameManager : MonoBehaviour
     }
     private void Effect_getSpeedUp()
     {
-        itemGetSound.Play();
         speedUp++;
         speedUpLabel.text = speedUp + "";
 
@@ -482,7 +492,6 @@ public class GameManager : MonoBehaviour
         healEffect.SetActive(false);
         healEffect.SetActive(true);
 
-        healSound.Play();
         playerHP += healAmount;
         if (playerHP > 100) playerHP = 100;
         hpBarImage.fillAmount = playerHP / 100;
@@ -504,7 +513,6 @@ public class GameManager : MonoBehaviour
         chargeEffect.SetActive(false);
         chargeEffect.SetActive(true);
 
-        chargeSound.Play();
         skillCharged = 100f;
 
     }
@@ -528,7 +536,6 @@ public class GameManager : MonoBehaviour
     {
         if (speedUp <= 0) return;
 
-        speedUpSound.Play();
         speedUp--;
         speedUpLabel.text = speedUp + "";
 
