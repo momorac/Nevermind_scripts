@@ -139,7 +139,7 @@ public class NewTutorialManager : MonoBehaviour
             clickToNextText.SetActive(false);
 
             // 수정 부시면 넘어가기
-            if (GameManager.crystalCount > 0)
+            if (GameManager.Instance.crystalCount > 0)
             {
                 UnActivateUIimage();
                 isUiActivated = false;
@@ -189,7 +189,7 @@ public class NewTutorialManager : MonoBehaviour
             if (!isGetBomb)
             {
                 isGetBomb = true;
-                mainGameManager.setGetBomb();
+                GameEventManager.Instance.ItemGet("bomb");
             }
 
             if (Input.GetMouseButtonDown(0))
@@ -248,7 +248,7 @@ public class NewTutorialManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.TutorialCompleted = true;
+        GameManager.Instance.TutorialCompleted = true;
         FirstPersonController.onTutorial = false;
     }
 

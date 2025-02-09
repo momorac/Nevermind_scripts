@@ -35,18 +35,18 @@ public class AutoSceneLoader : MonoBehaviour
             blackOverlay.DOColor(Color.black, 2f);
             DOVirtual.DelayedCall(2.2f, () =>
             {
-                GameManager.TutorialCompleted = false;
-                GameManager.playerHP = 100;
-                GameManager.crystalCount = 0;
-                GameManager.puzzleStage = 0;
+                GameManager.Instance.TutorialCompleted = false;
+                GameManager.Instance.playerHP = 100;
+                GameManager.Instance.crystalCount = 0;
+                GameManager.Instance.puzzleStage = 0;
 
-                GameManager.heal = 0;
-                GameManager.recharge = 0;
-                GameManager.bomb = 0;
-                GameManager.speedUp = 0;
-                GameManager.shield = 0;
+                GameManager.Instance.heal = 0;
+                GameManager.Instance.recharge = 0;
+                GameManager.Instance.bomb = 0;
+                GameManager.Instance.speedUp = 0;
+                GameManager.Instance.shield = 0;
 
-                GameManager.CharacterPosition = new Vector3(0, 4.4f, 0);
+                GameManager.Instance.CharacterPosition = new Vector3(0, 4.4f, 0);
 
                 SceneManager.LoadScene("TitleScene");
             });

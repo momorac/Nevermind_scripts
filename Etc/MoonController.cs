@@ -37,10 +37,6 @@ public class MoonController : MonoBehaviour
         float targetdistance = Vector3.Distance(character.position, transform.position);
 
         transform.position = Vector3.Lerp(transform.position, targetCrystal.transform.position, 0.5f * Time.deltaTime);
-
-
-
-
     }
 
     public void MoonMoveToCharacter()
@@ -48,13 +44,19 @@ public class MoonController : MonoBehaviour
         transform.position = characterMoonPosition.transform.position;
         moonBubble.DOColor(Color.white, 1f);
         moonBubble_text.DOColor(Color.black, 1f);
-        moonBubble_text.text = "얼음 수정을 충분히 없애줘서 가로등을 수리할 수 있게 되었어. 나를 따라와!";
+        moonBubble_text.text = "가로등을 수리할 수 있게 되었어. 하늘을 보고 나를 따라와!";
     }
 
     public void UnActivateBubble()
     {
         moonBubble.color = new Color(0, 0, 0, 0);
         moonBubble_text.color = new Color(0, 0, 0, 0);
+    }
+
+    public void ActivateBubble()
+    {
+        moonBubble.DOColor(Color.white, 1f);
+        moonBubble_text.DOColor(Color.black, 1f);
     }
 
 }

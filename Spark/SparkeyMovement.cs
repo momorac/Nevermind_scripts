@@ -9,7 +9,6 @@ using Random = UnityEngine.Random;
 
 public class SparkeyMovement : MonoBehaviour
 {
-    public GameManager gameManager;
     public GameObject player;
 
     public Camera mainCamera;
@@ -39,7 +38,7 @@ public class SparkeyMovement : MonoBehaviour
     void FixedUpdate()
     {
 
-        transform.position = Vector3.MoveTowards(transform.position, playerPosition.position, moveSpeed*Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, playerPosition.position, moveSpeed * Time.deltaTime);
         // 플레이어와 특정 오브젝트 간의 거리 계산
         float distance = Vector3.Distance(transform.position, playerPosition.position);
 
@@ -79,13 +78,13 @@ public class SparkeyMovement : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             //캐릭터가 파워모드이면 
-            if (gameManager.isCharacterPowerMode)
+            if (GameManager.Instance.isCharacterPowerMode)
             {
                 if (messageUIInstance != null)
                     Destroy(messageUIInstance);
                 Destroy(gameObject);
-                gameManager.UnAttacked();
-                firstPersonController.sparkEndSound.Play();
+                GameManager.Instance.UnAttacked();
+                GameEventManager.Instance.SparkeyDie();
             }
         }
     }
@@ -94,15 +93,15 @@ public class SparkeyMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            gameManager.Attacked();
+            GameManager.Instance.Attacked();
 
             if (firstPersonController.isSpinning)
             {
                 if (messageUIInstance != null)
                     Destroy(messageUIInstance);
                 Destroy(gameObject);
-                gameManager.UnAttacked();
-                firstPersonController.sparkEndSound.Play();
+                GameManager.Instance.UnAttacked();
+                GameEventManager.Instance.SparkeyDie();
             }
         }
     }
@@ -111,7 +110,7 @@ public class SparkeyMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            gameManager.UnAttacked();
+            GameManager.Instance.UnAttacked();
         }
     }
 }

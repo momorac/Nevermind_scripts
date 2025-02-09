@@ -41,18 +41,39 @@ public class GameEventManager : MonoBehaviour
     #endregion
 
     // 플레이어 상태 이벤트
+    public event Action<bool> OnPlayerMove;
     public event Action<float> OnPlayerHPChanged;
-    public event Action OnPlayerPowermode;
+    public event Action OnPlayerSpin;
+    public event Action OnPlayerPowerMode;
 
+    public void PlayerMove(bool isMoving) => OnPlayerMove(isMoving);
     public void PlayerHPChanged(float newHP) => OnPlayerHPChanged?.Invoke(newHP);
-    public void PlayerPowermode() => OnPlayerPowermode?.Invoke();
+    public void PlayerSpin() => OnPlayerSpin?.Invoke();
+    public void PlayerPowerMode() => OnPlayerPowerMode?.Invoke();
+
+    // 스킬 사용 관련 이벤트
+    public event Action<float> OnSkillGageChanged;
+    public event Action OnSparkeyDie;
+
+    public void SkillGageChanged(float newGage) => OnSkillGageChanged?.Invoke(newGage);
+    public void SparkeyDie() => OnSparkeyDie?.Invoke();
+
+    // 퍼즐 씬 전환 관련 이벤트
+    public event Action OnPuzzleOpened;
+    public event Action<bool> OnPlayerClosedToLight;
+
+    public void PuzzleOpened() => OnPuzzleOpened?.Invoke();
+    public void PlayerClosedToLight(bool isClosed) => OnPlayerClosedToLight?.Invoke(isClosed);
 
 
     // 아이템 획득/사용 이벤트
     public event Action<string> OnItemGet;
-    public event Action<string> OnItemUsed;
+    public event Action<string> OnItemUse;
+    public event Action<int> OnItemChanged;
 
     public void ItemGet(string itemName) => OnItemGet?.Invoke(itemName);
-    public void ItemUsed(string itemName) => OnItemUsed?.Invoke(itemName);
+    public void ItemUse(string itemName) => OnItemUse?.Invoke(itemName);
+    public void ItemChanged(int newIndex) => OnItemChanged?.Invoke(newIndex);
+
 }
 

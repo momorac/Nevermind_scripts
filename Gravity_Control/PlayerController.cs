@@ -7,6 +7,7 @@ public class FirstPersonController : MonoBehaviour
 {
     //public classes
     public Animator characterAnimator;
+    [SerializeField] private AudioSource footstepSound;
 
     [Space(10)]
     // public vars
@@ -19,11 +20,9 @@ public class FirstPersonController : MonoBehaviour
     public bool isSpinning = false;
 
     [Space(10)]
-    [Header("effect & audio")]
+    [Header("effect")]
     public GameObject particleEffect;
-    public AudioSource footstepSound;
-    public AudioSource sparkEndSound;
-    public AudioSource spinSound;
+
 
     // System vars
     private bool isGrounded;
@@ -36,13 +35,14 @@ public class FirstPersonController : MonoBehaviour
 
     void Start()
     {
-        footstepSound.playOnAwake = true;
-        footstepSound.Pause();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         cameraTransform = Camera.main.transform;
         rigidbody = GetComponent<Rigidbody>();
+
+        footstepSound.playOnAwake = true;
+        footstepSound.Pause();
     }
 
     void FixedUpdate()
@@ -57,6 +57,7 @@ public class FirstPersonController : MonoBehaviour
         if (moveDir != Vector3.zero)
         {
             characterAnimator.SetBool("IsMoving", true);
+
             footstepSound.UnPause();
         }
         else
@@ -109,18 +110,17 @@ public class FirstPersonController : MonoBehaviour
         }
 
         // Spin
-        if (Input.GetKeyDown(KeyCode.LeftShift) && GameManager.Instance.skillCharged >= 100)
+        if (!isSpinning && Input.GetKeyDown(KeyCode.LeftShift) && GameManager.Instance.skillGage >= 100)
         {
-            GameManager.Instance.skillCharged = 0;
+            GameManager.Instance.skillGage = 0;
             isSpinning = true;
-            spinSound.Play();
+            GameEventManager.Instance.PlayerSpin();
             characterAnimator.SetTrigger("SpinTrigger");
 
             // 스킬 이펙트 파티클 오브젝트 활성화 후 비활성화 딜레이
             particleEffect.SetActive(true);
             Invoke("DisableParticle", 3f);
         }
-
     }
 
 
@@ -166,7 +166,4 @@ public class FirstPersonController : MonoBehaviour
             }
         }
     }
-
-
-
 }

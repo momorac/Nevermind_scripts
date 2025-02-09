@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("character audio source")]
+    [SerializeField] private AudioSource spinSound;
+    [SerializeField] private AudioSource sparkDieSound;
+
+    [Space(10)]
     [Header("effect audio source")]
     [SerializeField] private AudioSource hitSound;
     [SerializeField] private AudioSource powerModeSound;
@@ -13,10 +18,18 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource healSound;
     [SerializeField] private AudioSource speedUpSound;
     [SerializeField] private AudioSource chargeSound;
-    [SerializeField] private AudioSource puzzleOpenSound;
 
+    [Space(10)]
+    [Header("alert audio source")]
+    [SerializeField] private AudioSource puzzleOpenSound;
+    [SerializeField] private AudioSource itemTabSound;
+
+
+
+    #region player control
+ 
     // 플레이어 데미지 입었을 시 사운드 출력
-    private void OnAttacked(float newHP)
+    private void OnPlayerAttacked(float newHP)
     {
         if (GameManager.Instance.playerHP > newHP && !hitSound.isPlaying)
         {
@@ -24,6 +37,17 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void OnPlayerSpin()
+    {
+        spinSound.Play();
+    }
+
+    #endregion
+
+
+
+
+    #region item&effect
     // 아이템 획득시 효과음 출력
     private void OnItemGet(string itemName)
     {
@@ -31,7 +55,7 @@ public class AudioManager : MonoBehaviour
     }
 
     // 아이템 사용 시 효과음 출력
-    private void OnItemUsed(string itemName)
+    private void OnItemUse(string itemName)
     {
         switch (itemName)
         {
@@ -50,21 +74,61 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    // 선택된 아이템 변경 시 효과음 출력
+    private void OnItemChanged(int newIndex)
+    {
+        itemTabSound.Play();
+    }
+
     // 플레이어 파워모드 시 효과음 출력
-    private void OnPlayerPowermode()
+    private void OnPlayerPowerMode()
     {
         powerModeSound.Play();
     }
+    #endregion
+
+
+    private void OnPuzzleOpened()
+    {
+        puzzleOpenSound.Play();
+    }
+
+    private void OnSparkeyDie()
+    {
+        sparkDieSound.Play();
+    }
+
 
     private void Awake()
     {
-        GameEventManager.Instance.OnPlayerHPChanged += OnAttacked;
+        // GameEventManager 이벤트 구독
+        GameEventManager.Instance.OnPlayerHPChanged += OnPlayerAttacked;
+        GameEventManager.Instance.OnPlayerSpin += OnPlayerSpin;
+        GameEventManager.Instance.OnPlayerPowerMode += OnPlayerPowerMode;
         GameEventManager.Instance.OnItemGet += OnItemGet;
-        GameEventManager.Instance.OnItemUsed += OnItemUsed;
-        GameEventManager.Instance.OnPlayerPowermode += OnPlayerPowermode;
+        GameEventManager.Instance.OnItemUse += OnItemUse;
+        GameEventManager.Instance.OnItemChanged += OnItemChanged;
+        GameEventManager.Instance.OnPuzzleOpened += OnPuzzleOpened;
+        GameEventManager.Instance.OnSparkeyDie += OnSparkeyDie;
     }
 
     private void Start()
     {
+        
+    }
+
+    private void OnDestroy()
+    {
+        // GameEventManager 이벤트 구독해제
+        GameEventManager.Instance.OnPlayerHPChanged -= OnPlayerAttacked;
+        GameEventManager.Instance.OnPlayerSpin -= OnPlayerSpin;
+        GameEventManager.Instance.OnPlayerPowerMode -= OnPlayerPowerMode;
+        GameEventManager.Instance.OnItemGet -= OnItemGet;
+        GameEventManager.Instance.OnItemUse -= OnItemUse;
+        GameEventManager.Instance.OnItemChanged -= OnItemChanged;
+        GameEventManager.Instance.OnPuzzleOpened -= OnPuzzleOpened;
+        GameEventManager.Instance.OnSparkeyDie -= OnSparkeyDie;
+
+
     }
 }

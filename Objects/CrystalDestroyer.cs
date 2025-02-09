@@ -11,7 +11,6 @@ public class CrystalDestroyer : MonoBehaviour
 {
     public float destroyTime = 3f;
     public int sparkBlowPercent;
-    public GameManager gameManager;
     public GameObject Spark;
 
 
@@ -22,7 +21,7 @@ public class CrystalDestroyer : MonoBehaviour
 
     private void Start()
     {
-        gameManager.crystalRemain++;
+        GameManager.Instance.crystalRemain++;
     }
 
     public void BreakTrigger()
@@ -46,9 +45,9 @@ public class CrystalDestroyer : MonoBehaviour
         }
         else
         {
-            gameManager.CrystalBreakEffect();
+            GameManager.Instance.CrystalBreakEffect();
         }
-        gameManager.skillCharged += 10;
+        GameManager.Instance.skillGage += 10;
 
         Invoke("TimerDestroy", destroyTime);
     }
@@ -61,14 +60,15 @@ public class CrystalDestroyer : MonoBehaviour
             main.SetActive(false);
             fracture.SetActive(true);
 
-            gameManager.skillCharged += 10;
+            GameManager.Instance.skillGage += 10;
+            GameEventManager.Instance.SkillGageChanged(GameManager.Instance.skillGage);
             Invoke("TimerDestroy", destroyTime);
         }
     }
 
     private void TimerDestroy()
     {
-        GameManager.crystalCount++;
+        GameManager.Instance.crystalCount++;
         Destroy(gameObject);
     }
 
